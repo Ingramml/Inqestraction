@@ -1,0 +1,72 @@
+import PyPDF2
+
+
+pdfFilea = open ('/Users/michael/Google Drive/Intrepid/Complaints/INQ17-0525/Redacted/INQ17-0525 Summary_Redacted.pdf', 'rb')
+pdfreader = PyPDF2.PdfFileReader(pdfFilea)
+
+pdfFile = pdfreader.getPage(0)
+
+
+filetext=pdfFile.extractText()
+#Find inquiry number	
+Ianoloc=filetext.find('IA No:')
+IANolen=len('IA No:')
+Recieved=filetext.find('Received')
+IANo=filetext[(Ianoloc)+(IANolen)+1:(Recieved)]
+print(IANo)
+#Find Casen number
+caseloc=filetext.find('Case No:')
+casenumberlength=len('Case No:')
+classifcationloc=filetext.find('Classification/Sub-classification:')
+casenumber=filetext[(caseloc+casenumberlength)+1:classifcationloc]
+print(casenumber)
+
+#Reason for Inquiry
+classifcationloc
+Classificationlen=len('Classification/Sub-classification:')
+involvedcitizen=filetext.find('Involved citizen:')
+ReasonforInquiry=filetext[((classifcationloc+Classificationlen)+1):involvedcitizen]
+print(ReasonforInquiry)
+#Officer name
+involved=filetext.find('Officers involved:')
+involvedlength=len('Officers involved:')
+currentinfo=filetext.find('Officer current info:')
+officerrannknambadge=filetext[(involved+involvedlength):currentinfo]
+officer=officerrannknambadge.split(" ", 1) #Split after office rank
+officerrank=officer[0] 
+print(officerrank)
+officername=officer[1][:(officerrannknambadge.index('[')-len(officerrank)-1)] #use badenumber to isolate name
+print(officername)
+badgnumber=officerrannknambadge[(officerrannknambadge.index('[')+1):(officerrannknambadge.index(']'))]
+print(badgnumber)
+
+pdfFile2 = pdfreader.getPage(4)
+
+filetext2=pdfFile2.extractText()
+
+#Find event summary
+summaryloc=filetext2.find('Summary:')
+#print(summaryloc)
+Whenwhere=filetext2.find('When/where:')
+#print(Whenwhere)
+Summary=filetext2[summaryloc:Whenwhere]
+print(Summary)
+#investagator name and baddnumber 
+investigatorloc=filetext2.find('Outside/file investigator:')
+assignloc=filetext2.find('Investigator assign:')
+Investigatornamebadge=filetext2[(investigatorloc+len('Outside/file investigator:')+1):(assignloc)] #produces combined name, bdadge number
+fileinvestigator=Investigatornamebadge[:(Investigatornamebadge.index('[')-1)] #Name in last, first rank 
+print(fileinvestigator)
+Investigatorbadgenumber=Investigatornamebadge[Investigatornamebadge.index('[')+1:Investigatornamebadge.index(']')] #investagtor badgenumber
+print(Investigatorbadgenumber)
+
+Investigatorassignloc=filetext2.find('Investigator assign:')
+Supervisorassignloc=filetext2.find('Supervisor assign:')
+Sourceofinformationloc=filetext2.find('Source of information:')
+Investigatorassign=filetext2[(Investigatorassignloc+len('Investigator assign:')):Supervisorassignloc]
+org=filetext2.find('Organizational component(s):')
+print(Investigatorassign)
+Supervisorassign=filetext2[(Supervisorassignloc+len('Supervisor assign:')+1):Sourceofinformationloc] #Supervisor assigned to 
+print(Supervisorassign)
+Sourceofinformation=filetext2[(Sourceofinformationloc+len('Source of information:')+1):org] #Where the information came from
+print(Sourceofinformation)
